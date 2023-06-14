@@ -1,0 +1,8 @@
+{
+  "name": "vslackstatus-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/ShubhamPatilsd/vslackstatus-server.git",
+  "author": "Shubham Patil <shubhampatilsd@gmail.com>",
+  "license": "MIT"
+}
