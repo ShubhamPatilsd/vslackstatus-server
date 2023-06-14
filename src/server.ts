@@ -14,9 +14,9 @@ const io = new Server(server);
 
 io.on("connection", async (socket) => {
   const { signingSecret, token } = socket.handshake.auth as any;
-  const { emoji } = socket.handshake.query as any;
+  let { emoji } = socket.handshake.query as any;
 
-  console.log(signingSecret, token, emoji);
+  emoji === "" || emoji === undefined ? (emoji = ":vsc:") : emoji;
 
   const app = new App({
     signingSecret,
