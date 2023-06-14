@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import http from "http";
 import { Server } from "socket.io";
+import { App } from "@slack/bolt";
 
 // config
 dotenv.config();
@@ -11,10 +12,42 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-io.on("connection", (socket) => {
-  const { signingSecret, token, emoji } = socket.handshake.query as any;
+io.on("connection", async (socket) => {
+  const { signingSecret, token } = socket.handshake.auth as any;
+  const { emoji } = socket.handshake.query as any;
 
-  socket.on("updateStatus", (status) => {});
+  console.log(signingSecret, token, emoji);
+
+  const app = new App({
+    signingSecret,
+    token,
+  });
+
+  let status = app.client.users.profile.get().then((res) => {
+    return res.profile;
+  });
+
+  const beforeStatus = await status;
+
+  socket.on("updateStatus", (status_text) => {
+    app.client.users.profile.set({
+      profile: JSON.stringify({
+        status_text,
+        status_emoji: emoji,
+        status_expiration: 0,
+      }),
+    });
+  });
+
+  socket.on("disconnect", () => {
+    app.client.users.profile.set({
+      profile: JSON.stringify({
+        status_text: beforeStatus?.status_text,
+        status_emoji: beforeStatus?.status_emoji,
+        status_expiration: beforeStatus?.status_expiration,
+      }),
+    });
+  });
 });
 
 server.listen(PORT, () => {
