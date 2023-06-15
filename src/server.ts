@@ -18,36 +18,40 @@ io.on("connection", async (socket) => {
 
   emoji === "" || emoji === undefined ? (emoji = ":vsc:") : emoji;
 
-  const app = new App({
-    signingSecret,
-    token,
-  });
-
-  let status = app.client.users.profile.get().then((res) => {
-    return res.profile;
-  });
-
-  const beforeStatus = await status;
-
-  socket.on("updateStatus", (status_text) => {
-    app.client.users.profile.set({
-      profile: JSON.stringify({
-        status_text,
-        status_emoji: emoji,
-        status_expiration: 0,
-      }),
+  try {
+    const app = new App({
+      signingSecret,
+      token,
     });
-  });
 
-  socket.on("disconnect", () => {
-    app.client.users.profile.set({
-      profile: JSON.stringify({
-        status_text: beforeStatus?.status_text,
-        status_emoji: beforeStatus?.status_emoji,
-        status_expiration: beforeStatus?.status_expiration,
-      }),
+    let status = app.client.users.profile.get().then((res) => {
+      return res.profile;
     });
-  });
+
+    const beforeStatus = await status;
+
+    socket.on("updateStatus", (status_text) => {
+      app.client.users.profile.set({
+        profile: JSON.stringify({
+          status_text,
+          status_emoji: emoji,
+          status_expiration: 0,
+        }),
+      });
+    });
+
+    socket.on("disconnect", () => {
+      app.client.users.profile.set({
+        profile: JSON.stringify({
+          status_text: beforeStatus?.status_text,
+          status_emoji: beforeStatus?.status_emoji,
+          status_expiration: beforeStatus?.status_expiration,
+        }),
+      });
+    });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 server.listen(PORT, () => {
