@@ -16,6 +16,10 @@ io.on("connection", async (socket) => {
   const { signingSecret, token } = socket.handshake.auth as any;
   let { emoji } = socket.handshake.query as any;
 
+  if (!signingSecret || !token) {
+    console.log("no signing secret or no token");
+  }
+
   emoji === "" || emoji === undefined ? (emoji = ":vsc:") : emoji;
 
   try {
