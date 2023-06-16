@@ -35,23 +35,31 @@ io.on("connection", async (socket) => {
     const beforeStatus = await status;
 
     socket.on("updateStatus", (status_text) => {
-      app.client.users.profile.set({
-        profile: JSON.stringify({
-          status_text,
-          status_emoji: emoji,
-          status_expiration: 0,
-        }),
-      });
+      try {
+        app.client.users.profile.set({
+          profile: JSON.stringify({
+            status_text,
+            status_emoji: emoji,
+            status_expiration: 0,
+          }),
+        });
+      } catch (err) {
+        console.log("not authed error");
+      }
     });
 
     socket.on("disconnect", () => {
-      app.client.users.profile.set({
-        profile: JSON.stringify({
-          status_text: beforeStatus?.status_text,
-          status_emoji: beforeStatus?.status_emoji,
-          status_expiration: beforeStatus?.status_expiration,
-        }),
-      });
+      try {
+        app.client.users.profile.set({
+          profile: JSON.stringify({
+            status_text: beforeStatus?.status_text,
+            status_emoji: beforeStatus?.status_emoji,
+            status_expiration: beforeStatus?.status_expiration,
+          }),
+        });
+      } catch (err) {
+        console.log("not authed error, disconnect");
+      }
     });
   } catch (err) {
     console.log(err);
