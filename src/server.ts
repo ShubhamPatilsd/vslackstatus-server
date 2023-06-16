@@ -18,6 +18,7 @@ io.on("connection", async (socket) => {
 
   if (!signingSecret || !token) {
     console.log("no signing secret or no token");
+    socket.disconnect();
   }
 
   emoji === "" || emoji === undefined ? (emoji = ":vsc:") : emoji;
