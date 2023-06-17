@@ -29,10 +29,14 @@ io.on("connection", async (socket) => {
       token,
     });
 
+    console.log("past app creation");
+
     let status = app.client.users.profile.get().then((res) => {
       return res.profile;
     });
 
+    console.log("past status creation");
+    
     const beforeStatus = await status;
 
     socket.on("updateStatus", (status_text) => {
