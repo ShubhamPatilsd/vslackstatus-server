@@ -40,6 +40,7 @@ io.on("connection", async (socket) => {
     const beforeStatus = await status;
 
     socket.on("updateStatus", (status_text) => {
+      console.log("updateStatus");
       try {
         app.client.users.profile.set({
           profile: JSON.stringify({
@@ -54,6 +55,7 @@ io.on("connection", async (socket) => {
     });
 
     socket.on("disconnect", () => {
+      console.log("disconnect");
       try {
         app.client.users.profile.set({
           profile: JSON.stringify({
