@@ -32,6 +32,7 @@ io.on("connection", async (socket) => {
     console.log("past app creation");
 
     let status = app.client.users.profile.get().then((res) => {
+      console.log("in res.profile")
       return res.profile;
     });
 
