@@ -15,7 +15,7 @@ const io = new Server(server);
 io.on("connection", async (socket) => {
   const { signingSecret, token } = socket.handshake.auth as any;
   let { emoji } = socket.handshake.query as any;
-
+  console.log(signingSecret,token);
   if (!signingSecret || !token) {
     console.log("no signing secret or no token");
     socket.disconnect();
