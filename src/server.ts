@@ -39,6 +39,8 @@ io.on("connection", async (socket) => {
     
     const beforeStatus = await status;
 
+    console.log("passed beforeStatus");
+
     socket.on("updateStatus", (status_text) => {
       console.log("updateStatus");
       try {
